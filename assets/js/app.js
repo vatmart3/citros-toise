@@ -29,16 +29,23 @@
    *    horizontalement — l'impression s'enroule réellement sur le verre.
    * ------------------------------------------------------------------ */
   var Bottle = (function () {
-    var slats = [];       /* { el, shade, cos } */
     var spin = document.querySelector("[data-spin]");
+    var petitEcran = window.innerWidth < 861;
 
+    /* L'ombrage d'un cylindre ne dépend pas de la lamelle mais de sa position
+       à l'écran : un dégradé FIXE posé au-dessus du cylindre le rend donc
+       gratuitement, au lieu de réécrire une opacité par lamelle à chaque
+       image. Les faces arrière, elles, sont simplement masquées
+       (`backface-visibility`) — de toute façon on ne voit pas l'étiquette du
+       dos à travers une citronnade trouble. Résultat : la seule écriture de
+       style par image est l'angle du cylindre. */
     function buildCylinder(cyl, template) {
       var N = parseInt(cyl.dataset.slats, 10);
+      if (petitEcran) N = Math.max(9, Math.round(N * 0.78));
       var R = parseFloat(cyl.dataset.radius);
       var step = 360 / N;
       var w = 2 * R * Math.tan(Math.PI / N);
       var stripW = N * w;
-      var shadeMax = parseFloat(cyl.dataset.shade || "0.92");
 
       cyl.style.width = w + "px";
       cyl.style.marginLeft = -w / 2 + "px";
@@ -59,14 +66,10 @@
         if (band) band.style.justifyContent = "space-around";
         strip.appendChild(art);
 
-        var shade = document.createElement("div");
-        shade.className = "slat__shade";
-
         slat.appendChild(strip);
-        slat.appendChild(shade);
         cyl.appendChild(slat);
-        slats.push({ el: slat, shade: shade, angle: i * step, max: shadeMax, last: -1 });
       }
+
     }
 
     var tplLabel = document.getElementById("tpl-label");
@@ -83,41 +86,23 @@
       var rand = function () { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
       var ns = "http://www.w3.org/2000/svg";
       var frag = document.createDocumentFragment();
-      for (var d = 0; d < 90; d++) {
+      for (var d = 0; d < 150; d++) {
         var c = document.createElementNS(ns, "circle");
         var x = 32 + rand() * 176;
         var y = 165 + rand() * 415;
-        var r = 0.7 + rand() * 2.4;
+        var r = 0.6 + rand() * 2.6;
         c.setAttribute("cx", x.toFixed(1));
         c.setAttribute("cy", y.toFixed(1));
         c.setAttribute("r", r.toFixed(1));
-        c.setAttribute("fill-opacity", (0.18 + rand() * 0.5).toFixed(2));
+        c.setAttribute("fill-opacity", (0.22 + rand() * 0.62).toFixed(2));
         frag.appendChild(c);
       }
       drops.appendChild(frag);
     }
 
-    /* éclairage : la lumière reste fixe pendant que le cylindre tourne */
-    function light(rot) {
-      var base = rot + 180;
-      for (var i = 0; i < slats.length; i++) {
-        var s = slats[i];
-        var a = (s.angle + base) * Math.PI / 180;
-        var c = Math.cos(a - 0.38);            /* source décalée vers la gauche */
-        var shade = Math.round(clamp((1 - c) / 2, 0, 1) * 100) / 100;
-        if (shade === s.last) continue;
-        s.last = shade;
-        s.shade.style.opacity = shade * s.max;
-        s.el.style.opacity = c < -0.05 ? 0.07 : 1;   /* face opposée : vue à travers le liquide */
-      }
-    }
-
     return {
-      spin: spin,
-      light: light,
       set: function (rot) {
         if (spin) spin.style.setProperty("--rot", rot.toFixed(2) + "deg");
-        light(rot);
       }
     };
   })();
@@ -130,7 +115,7 @@
   var bottle = document.querySelector("[data-bottle]");
   var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
   var parallax = Array.prototype.slice.call(document.querySelectorAll("[data-parallax]"));
-  var sky = document.querySelector("[data-sky]");
+  var forme = document.querySelector("[data-forme]");
   var progressBar = document.querySelector(".site-header__progress i");
   var header = document.querySelector(".site-header");
 
@@ -142,12 +127,35 @@
   /* écrans courts : on rend un peu de hauteur au texte */
   function facteur() { return vh < 620 ? 0.00040 : 0.00052; }
 
+  /* Téléphone : on mesure la bande réellement libre entre l'en-tête et le
+     chapitre le plus haut. C'est elle qui décide de la taille de la bouteille
+     ET de la distance qu'elle peut parcourir — donc la même chorégraphie que
+     sur ordinateur, sans jamais mordre sur le texte. */
+  var bande = { haut: 74, bas: 0, course: 0, echelle: 0.4 };
+
+  function mesureBande() {
+    vh = window.innerHeight; vw = window.innerWidth;
+    if (vw >= 861) return;
+    var bas = vh;
+    for (var i = 1; i < chapters.length; i++) {
+      var enfants = chapters[i].children;
+      for (var j = 0; j < enfants.length; j++) {
+        var r = enfants[j].getBoundingClientRect();
+        if (r.height > 0) bas = Math.min(bas, r.top);
+      }
+    }
+    bande.haut = 74;
+    bande.bas = clamp(bas - 20, bande.haut + 150, vh - 40);
+    var dispo = bande.bas - bande.haut;
+    var hauteur = Math.min(vh * facteur() * 620, dispo);
+    bande.echelle = Math.min(hauteur / 620, vw / 780);
+    bande.course = Math.max(0, dispo - 620 * bande.echelle) * 0.7;
+  }
+
   function fitBottle() {
     vh = window.innerHeight; vw = window.innerWidth;
-    /* téléphone : la bouteille occupe une hauteur fixe d'écran (32 vh), ce qui
-       laisse toujours la même place au texte, du petit iPhone à la grande dalle. */
-    var s = vw < 861 ? Math.min(vh * facteur(), vw / 780) : Math.min(vh / 1150, vw / 860);
-    if (bottle) bottle.style.setProperty("--bottle-scale", clamp(s, 0.34, 0.95).toFixed(3));
+    var s = vw < 861 ? bande.echelle : Math.min(vh / 1150, vw / 860);
+    if (bottle) bottle.style.setProperty("--bottle-scale", clamp(s, 0.3, 0.95).toFixed(3));
   }
 
   function readProgress() {
@@ -161,22 +169,32 @@
     /* bouteille : elle descend, ralentit, et tourne sans à-coups */
     var rot = p * 360 * TOURS;
     var petit = vw < 861;
-    /* mobile : la bouteille remonte pour laisser la moitié basse au texte */
-    /* haut d'écran : sous l'en-tête, à 6 px près, quelle que soit la hauteur */
-    /* haut de la bouteille calé à 74 px, soit juste sous l'en-tête */
-    var haut = 74 / vh - 0.5 + 291.4 * facteur();
-    var by = (petit
-      ? track(p, [[0, 0.12], [0.17, haut], [0.86, haut], [1, haut + 0.03]])
-      : track(p, [[0, 0.17], [0.16, 0.04], [0.62, 0.09], [1, 0.16]])) * vh;
-    var bs = petit
-      ? track(p, [[0, 1.3], [0.2, 0.94], [1, 0.94]])
-      : track(p, [[0, .96], [0.4, 0.92], [0.75, 0.88], [1, 0.94]]);
     var tilt = Math.sin(p * Math.PI * 2) * 2.6;
-    /* chapitres 2 et 4 : la bouteille libère la moitié de l'écran */
-    var bx = petit ? 0 : track(p, [
-      [0.30, 0], [0.42, -0.16], [0.58, -0.16], [0.68, 0],
-      [0.80, 0], [0.87, 0.15], [1, 0.15]
-    ]) * vw;
+    var by, bs, bx;
+
+    if (petit) {
+      /* Même chorégraphie que sur ordinateur — la bouteille respire, descend
+         et se décale — mais bornée à la bande mesurée. */
+      bs = track(p, [[0, 1.04], [0.17, 1], [0.42, .93], [0.62, 1], [0.84, .94], [1, 1]]);
+      var hBouteille = 620 * bande.echelle * bs;
+      var descente = track(p, [[0.17, 0], [0.5, .55], [0.86, 1], [1, .84]]) * bande.course;
+      var byScene = bande.haut + descente + hBouteille / 2 - vh / 2;
+      /* ouverture : posée plus bas, dans le paysage, puis elle rejoint la bande */
+      by = byScene;          /* même bande dès l'ouverture : le texte reste dessous */
+      bx = track(p, [
+        [0.30, 0], [0.42, -0.13], [0.58, -0.13], [0.68, 0],
+        [0.80, 0], [0.87, 0.12], [1, 0.12]
+      ]) * vw;
+    } else {
+      by = track(p, [[0, 0.1], [0.16, 0.04], [0.62, 0.09], [1, 0.16]]) * vh;
+      bs = track(p, [[0, 1.16], [0.16, .94], [0.4, 0.92], [0.75, 0.88], [1, 0.94]]);
+      /* ouverture : la bouteille est posée à droite, sur la forme marine ;
+         chapitres 2 et 4 : elle libère la moitié de l'écran */
+      bx = track(p, [
+        [0, 0.2], [0.16, 0], [0.30, 0], [0.42, -0.16], [0.58, -0.16], [0.68, 0],
+        [0.80, 0], [0.87, 0.15], [1, 0.15]
+      ]) * vw;
+    }
 
     if (holder) {
       holder.style.setProperty("--bx", bx.toFixed(1) + "px");
@@ -187,13 +205,14 @@
     Bottle.set(rot);
 
 
-    /* le plein jour se dissipe : on entre dans le bleu nuit de la marque */
-    var jour = 1 - clamp((p - 0.04) / 0.13, 0, 1);
-    if (sky) {
-      sky.style.setProperty("--sky-opacity", jour.toFixed(3));
-      sky.style.visibility = jour < 0.01 ? "hidden" : "visible";
+    /* La grande forme marine porte le hero ; dès qu'on entre dans le récit
+       elle se retire vers le coin, sinon elle avalerait les chapitres. */
+    if (forme) {
+      var sortie = clamp((p - 0.03) / 0.13, 0, 1);
+      forme.style.transform =
+        "translate3d(" + (sortie * 30).toFixed(1) + "vw," + (-sortie * 12).toFixed(1) + "vh,0)" +
+        " scale(" + (1 - sortie * 0.3).toFixed(3) + ")";
     }
-    if (header) header.classList.toggle("is-light", jour > 0.55);
 
     for (var i = 0; i < parallax.length; i++) {
       var f = parseFloat(parallax[i].dataset.parallax);
@@ -216,10 +235,12 @@
     }
   }
 
+  var peint = -1;
   function loop() {
     smooth = lerp(smooth, target, 0.11);
     if (Math.abs(smooth - target) < 0.00012) smooth = target;
-    paint(smooth);
+    /* rien n'a bougé : on rend la main au navigateur */
+    if (smooth !== peint) { paint(smooth); peint = smooth; }
     requestAnimationFrame(loop);
   }
 
@@ -266,7 +287,14 @@
     var surfaces = document.querySelectorAll(
       ".produit, .serve, .table-scroll, .buy__card, .journey__art, .about__trio, .futur__visuel"
     );
-    Array.prototype.forEach.call(surfaces, function (el) { el.setAttribute("data-volet", ""); });
+    Array.prototype.forEach.call(surfaces, function (el) {
+      /* Piège : un clip-path réduit la boîte vue par l'IntersectionObserver.
+         Sur un élément qui est lui-même observé, le volet l'empêcherait
+         d'être jamais déclaré visible — il ne se lèverait donc jamais.
+         Ces éléments-là gardent le fondu simple. */
+      if (el.hasAttribute("data-reveal")) return;
+      el.setAttribute("data-volet", "");
+    });
   })();
 
   /* ------------------------------------------------------------------ *
@@ -363,6 +391,74 @@
   })();
 
   /* ------------------------------------------------------------------ *
+   * 6 bis. Sélecteur de parfum du hero (flèches, puces, clavier)
+   * ------------------------------------------------------------------ */
+  (function parfums() {
+    var VARIANTES = [
+      {
+        nom: "l'Originale", prix: "3,20 €", format: "la bouteille 33 cl",
+        texte: "Citron pressé, zestes infusés 48 heures à froid, sucre de canne blond. La recette de 1953, sans colorant ni conservateur — pressée face à la mer, à Sète.",
+        jus: ["#D9B860", "#EFD88C", "#FAEBB4", "#F4E19A", "#DEBF69", "#BC9B48"]
+      },
+      {
+        nom: "la Rosée", prix: "3,40 €", format: "édition d'été, 33 cl",
+        texte: "Le même citron, rejoint par le pamplemousse rose de Corse. Plus tendre en bouche, une amertume qui reste longue. Tirage d'été.",
+        jus: ["#DFA07E", "#F5C6AC", "#FDE2D3", "#F7CDB6", "#E3A583", "#C67F5C"]
+      },
+      {
+        nom: "la Verte", prix: "3,40 €", format: "édition d'été, 33 cl",
+        texte: "Citron et menthe fraîche du Lodévois, infusée à froid elle aussi. Le nez part sur la menthe, la fin de bouche revient au citron.",
+        jus: ["#A7C88A", "#CBE0B4", "#E6F1D8", "#D3E5BE", "#A9CB8C", "#84A968"]
+      }
+    ];
+    var nom = document.querySelector("[data-var-nom]");
+    var prix = document.querySelector("[data-var-prix]");
+    var format = document.querySelector("[data-var-format]");
+    var texte = document.querySelector("[data-var-texte]");
+    var puces = document.querySelector("[data-puces]");
+    if (!nom || !puces) return;
+
+    var index = 0;
+
+    VARIANTES.forEach(function (v, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-label", "Citrosétoise " + v.nom);
+      b.addEventListener("click", function () { montre(i); });
+      puces.appendChild(b);
+    });
+
+    function montre(i) {
+      index = (i + VARIANTES.length) % VARIANTES.length;
+      var v = VARIANTES[index];
+      /* on ne repeint que le liquide : l'encre marine de l'étiquette,
+         elle, ne doit pas changer de teinte. */
+      for (var k = 0; k < v.jus.length; k++) {
+        if (bottle) bottle.style.setProperty("--jus-" + (k + 1), v.jus[k]);
+      }
+      nom.textContent = v.nom;
+      if (prix) prix.textContent = v.prix;
+      if (format) format.textContent = v.format;
+      if (texte) texte.textContent = v.texte;
+      Array.prototype.forEach.call(puces.children, function (b, j) {
+        b.setAttribute("aria-selected", j === index ? "true" : "false");
+      });
+    }
+
+    var prec = document.querySelector("[data-var-prec]");
+    var suiv = document.querySelector("[data-var-suiv]");
+    if (prec) prec.addEventListener("click", function () { montre(index - 1); });
+    if (suiv) suiv.addEventListener("click", function () { montre(index + 1); });
+    document.addEventListener("keydown", function (e) {
+      if (current !== 0) return;                       /* seulement pendant le hero */
+      if (e.key === "ArrowLeft") montre(index - 1);
+      if (e.key === "ArrowRight") montre(index + 1);
+    });
+    montre(0);
+  })();
+
+  /* ------------------------------------------------------------------ *
    * 7. FAQ : ouverture animée en hauteur
    * ------------------------------------------------------------------ */
   (function accordion() {
@@ -417,7 +513,12 @@
   /* ------------------------------------------------------------------ *
    * 9. Démarrage
    * ------------------------------------------------------------------ */
+  mesureBande();
   fitBottle();
+  /* une seconde passe après la mise en page des polices */
+  window.addEventListener("load", function () {
+    requestAnimationFrame(function () { mesureBande(); fitBottle(); target = readProgress(); });
+  });
   if (reduced) {
     chapters.forEach(function (c) { c.classList.add("is-active"); countUp(c); });
     Bottle.set(18);
@@ -428,6 +529,8 @@
     requestAnimationFrame(loop);
   }
   window.addEventListener("resize", function () {
+    vh = window.innerHeight; vw = window.innerWidth;
+    mesureBande();
     fitBottle();
     target = readProgress();
   });
