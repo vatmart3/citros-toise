@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Pas de pièges à robots ici : le site tient en une page.
+Sitemap: https://www.lacitrosetoise.fr/sitemap.xml

@@ -1,0 +1,15 @@
+{
+  "name": "La Citrosétoise — Citronnade artisanale de Sète",
+  "short_name": "Citrosétoise",
+  "description": "Citronnade artisanale pressée face à la mer, à Sète. Cinq ingrédients, verre 33 cl consigné.",
+  "lang": "fr-FR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#061127",
+  "theme_color": "#061127",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

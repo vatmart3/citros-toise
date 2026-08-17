@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/assets/css/fonts.css">
+<style>
+  html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+  body{
+    display:grid;grid-template-columns:1.15fr .85fr;align-items:center;
+    font-family:"Montserrat",sans-serif;color:#0B1D3A;
+    background:radial-gradient(120% 80% at 20% 100%, #9CBEC2 0%, rgba(156,190,194,0) 60%),
+               linear-gradient(180deg,#FBFAF7 0%,#EEF3F2 34%,#D3E3E3 100%);
+  }
+  .txt{padding:0 0 0 78px}
+  .kicker{white-space:nowrap;font-size:15px;letter-spacing:.34em;text-transform:uppercase;color:#123E6D;margin:0 0 22px}
+  h1{font-family:"Playfair Display",serif;font-size:96px;line-height:.9;margin:0;letter-spacing:-.015em;
+     text-transform:uppercase;color:#0B1D3A}
+  em{display:block;font-family:"Playfair Display",serif;font-style:italic;font-size:52px;color:#C99A19;
+     margin:6px 0 0 96px;text-transform:none;letter-spacing:0}
+  p{margin:34px 0 0;font-size:21px;color:#3D5A75;max-width:30ch;font-weight:300}
+  .marks{display:flex;gap:26px;margin-top:34px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#123E6D}
+  .marks span{border:1px solid rgba(11,29,58,.24);border-radius:100px;padding:9px 16px}
+  .vis{position:relative;display:grid;place-items:center;height:100%}
+  .halo{position:absolute;width:430px;height:430px;border-radius:50%;
+        background:radial-gradient(50% 50% at 50% 50%,#fff 0%,rgba(255,255,255,.7) 55%,rgba(255,255,255,0) 72%)}
+  svg.b{position:relative;height:474px;filter:drop-shadow(0 30px 40px rgba(11,29,58,.28))}
+</style></head><body>
+  <div class="txt">
+    <p class="kicker">L'originale depuis toujours</p>
+    <h1>Citrosétoise<em>de Sète</em></h1>
+    <p>Citronnade artisanale. Cinq ingrédients, de vrais citrons de Méditerranée, pressée face à la mer.</p>
+    <div class="marks"><span>Sète — France</span><span>33 cl consigné</span><span>Sans conservateur</span></div>
+  </div>
+  <div class="vis"><span class="halo"></span>
+    <svg class="b" viewBox="0 0 240 620"><use href="/index.html#bottle-static"></use></svg>
+  </div>
+<script type="module">
+  /* le symbole vit dans index.html : on l'importe pour rester à source unique */
+  const html = await (await fetch('/index.html')).text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const sprite = doc.querySelector('svg.sprite');
+  document.body.appendChild(sprite);
+  document.querySelector('svg.b use').setAttribute('href', '#bottle-static');
+</script>
+</body></html>

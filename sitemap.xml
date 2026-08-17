@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.lacitrosetoise.fr/</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.lacitrosetoise.fr/assets/img/og-citrosetoise.png</image:loc>
+      <image:title>Bouteille de citronnade artisanale La Citrosétoise 33 cl</image:title>
+      <image:caption>La Citrosétoise, citronnade artisanale pressée face à la mer, à Sète.</image:caption>
+    </image:image>
+  </url>
+</urlset>
