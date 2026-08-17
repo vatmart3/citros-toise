@@ -140,7 +140,7 @@
   var vh = window.innerHeight, vw = window.innerWidth;
 
   /* écrans courts : on rend un peu de hauteur au texte */
-  function facteur() { return vh < 620 ? 0.00044 : 0.00052; }
+  function facteur() { return vh < 620 ? 0.00040 : 0.00052; }
 
   function fitBottle() {
     vh = window.innerHeight; vw = window.innerWidth;
@@ -247,6 +247,29 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 3 bis. Coupures : chaque ligne de titre reçoit son propre cadre
+   *        masquant, d'où elle remonte. Les <br> font foi.
+   * ------------------------------------------------------------------ */
+  (function coupures() {
+    var titres = document.querySelectorAll(
+      ".section__title, .chapter__title, .card__title, .site-footer__slogan"
+    );
+    Array.prototype.forEach.call(titres, function (el) {
+      var lignes = el.innerHTML.split(/<br\s*\/?>/i);
+      el.innerHTML = lignes.map(function (t, i) {
+        return '<span class="ligne" style="--l:' + i + '"><i>' + t.trim() + "</i></span>";
+      }).join("");
+      el.setAttribute("data-lignes", "");
+    });
+
+    /* volets balayants sur les surfaces */
+    var surfaces = document.querySelectorAll(
+      ".produit, .serve, .table-scroll, .buy__card, .journey__art, .about__trio, .futur__visuel"
+    );
+    Array.prototype.forEach.call(surfaces, function (el) { el.setAttribute("data-volet", ""); });
+  })();
+
+  /* ------------------------------------------------------------------ *
    * 4. Titre découpé lettre à lettre
    * ------------------------------------------------------------------ */
   (function splitTitle() {
@@ -259,7 +282,7 @@
       var span = document.createElement("span");
       span.className = "ch";
       span.setAttribute("aria-hidden", "true");
-      span.textContent = text[i];
+      span.textContent = text[i] === " " ? "\u00A0" : text[i];
       span.style.setProperty("--d", i);
       el.appendChild(span);
     }
@@ -379,6 +402,17 @@
    * ------------------------------------------------------------------ */
   var year = document.querySelector("[data-year]");
   if (year) year.textContent = new Date().getFullYear();
+
+  /* rideau d'ouverture : deux volets qui se coupent en deux et s'écartent */
+  (function rideau() {
+    var el = document.querySelector("[data-rideau]");
+    if (!el) return;
+    if (reduced) { el.remove(); return; }
+    root.classList.add("est-fige");
+    window.setTimeout(function () { el.classList.add("est-leve"); }, 260);
+    window.setTimeout(function () { root.classList.remove("est-fige"); }, 900);
+    window.setTimeout(function () { el.remove(); }, 2000);
+  })();
 
   /* ------------------------------------------------------------------ *
    * 9. Démarrage

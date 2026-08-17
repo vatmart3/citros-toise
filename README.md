@@ -4,6 +4,10 @@ Site one-page pour la citronnade artisanale de Sète. Sans framework, sans dépe
 sans requête tierce : trois fichiers (HTML / CSS / JS), des polices auto-hébergées et
 une bouteille en 3D construite en CSS.
 
+Typographie : **Anton** pour l'affiche (titres, chiffres, wordmark de l'étiquette),
+**Montserrat** pour les textes, **Playfair Display italique** réservé aux signatures
+(« de Sète », « Pressée face à la mer »).
+
 ```
 index.html                 la page (contenu + SEO + gabarits d'étiquette)
 assets/css/main.css        feuille de style unique
@@ -82,6 +86,23 @@ des chapitres est dimensionnée en `vh` avec des bornes en `rem`, si bien que le
 récit tient entier de l'iPhone SE à la grande dalle sans voile ni troncature.
 `tools/` ne contient pas de test automatisé, mais la vérification se fait vite :
 ouvrir la page à 320×568 et vérifier qu'aucun chapitre ne recouvre la bouteille.
+
+## Coupures et transitions
+
+Trois mécanismes, tous pilotés par la même classe `.is-in` (posée par
+l'`IntersectionObserver`) ou `.chapter.is-active` (posée par la scène épinglée) :
+
+- **coupures de titre** — `app.js` découpe chaque titre sur ses `<br>` et enferme
+  chaque ligne dans un cadre à `overflow: hidden` ; la ligne remonte de 108 % derrière
+  la coupe, décalée de 105 ms par rang. Les cadres débordent de `.2em` en haut pour ne
+  pas rogner les accents d'Anton (É, Î, È) ;
+- **volets** — les surfaces (cartes, panneaux, illustrations) se dévoilent par un
+  `clip-path: inset()` qui balaie de haut en bas ;
+- **rideau d'ouverture** — au chargement, deux volets bleu nuit se coupent en deux et
+  s'écartent. Le défilement est bloqué 900 ms, l'élément est retiré du DOM après coup.
+
+`prefers-reduced-motion` neutralise les trois : le rideau est supprimé avant même
+d'être affiché, les lignes et les volets sont posés à leur état final.
 
 ## Référencement
 

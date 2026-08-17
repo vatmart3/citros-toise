@@ -40,7 +40,7 @@
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 
-<link rel="preload" href="/assets/fonts/playfair-display-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/fonts.css">
 <link rel="stylesheet" href="/assets/css/main.css">
@@ -132,6 +132,15 @@
 
 <body>
 <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<!-- rideau d'ouverture : il se coupe en deux et s'écarte -->
+<div class="rideau" data-rideau aria-hidden="true">
+  <span class="rideau__volet rideau__volet--haut"></span>
+  <span class="rideau__volet rideau__volet--bas"></span>
+  <span class="rideau__marque">
+    <svg viewBox="0 0 48 48"><use href="#mark-lemon"></use></svg>
+  </span>
+</div>
 
 <!-- Grain + vignette d'ambiance -->
 <div class="atmosphere" aria-hidden="true">
@@ -817,13 +826,13 @@
         <rect x="46" y="298" width="148" height="222" fill="#FAF7F0"/>
         <rect x="46" y="298" width="148" height="222" fill="none" stroke="#0B1D3A" stroke-opacity=".16"/>
         <g transform="translate(102 314)" color="#123E6D"><use href="#mark-lemon" width="36" height="36"/></g>
-        <text x="120" y="392" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="25" font-weight="600" fill="#0B1D3A">La</text>
-        <text x="120" y="416" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="25" font-weight="600" fill="#0B1D3A">Citrosétoise</text>
+        <text x="120" y="390" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="24" letter-spacing=".3" fill="#0B1D3A">LA</text>
+        <text x="120" y="414" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="24" letter-spacing=".3" fill="#0B1D3A">CITROSÉTOISE</text>
         <g style="opacity: var(--lbl-detail, 1)">
           <text x="120" y="440" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="6.6" letter-spacing="1.5" fill="#123E6D">CITRONNADE ARTISANALE</text>
           <text x="120" y="460" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="6.4" letter-spacing="1.5" fill="#5C7391">— SÈTE — FRANCE —</text>
           <text x="120" y="486" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-style="italic" font-size="10.5" fill="#123E6D">Pressée face à la mer</text>
-          <text x="120" y="508" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="13" fill="#0B1D3A">33 cl</text>
+          <text x="120" y="508" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="13" letter-spacing=".4" fill="#0B1D3A">33 CL</text>
         </g>
       </g>
       <rect x="90" y="62" width="60" height="38" fill="#0B1D3A"/>
