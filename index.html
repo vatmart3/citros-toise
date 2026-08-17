@@ -163,7 +163,7 @@
       </ul>
     </nav>
 
-    <a class="btn btn--ghost site-header__cta" href="#ou-acheter" data-magnet>
+    <a class="btn btn--ghost site-header__cta" href="#ou-acheter">
       <span>Où l'acheter</span>
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -181,54 +181,11 @@
 <div class="scene" id="haut" data-scene>
   <div class="scene__pin">
 
-    <!-- ============ PAYSAGE D'OUVERTURE (se dissipe au défilement) ============ -->
+    <!-- ouverture : lumière du Sud, puis bascule dans le bleu nuit -->
     <div class="sky" data-sky aria-hidden="true">
       <div class="sky__gradient"></div>
-      <div class="sky__sun" data-parallax="0.05"></div>
-      <div class="sky__clouds sky__clouds--haut" data-parallax="0.12"><i></i><i></i><i></i></div>
-
-      <div class="sky__mont" data-parallax="0.07">
-        <svg viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax slice">
-          <path class="mont mont--loin" d="M0 420V300c120-14 210-72 300-140S500 40 600 78s150 132 250 156 190-46 300-70 330 26 450 62v194Z"/>
-          <path class="mont mont--pres" d="M0 420V330c150 4 260-46 360-118s180-104 260-58 138 148 244 176 196-24 310-42 300 32 426 76v56Z"/>
-        </svg>
-      </div>
-
-      <div class="sky__quai" data-parallax="0.03">
-        <svg viewBox="0 0 900 260" preserveAspectRatio="xMidYMax meet"><use href="#art-sete"></use></svg>
-      </div>
-
-      <!-- quartiers de citron en suspension : rappel de l'iconographie de la charte -->
-      <div class="sky__flotte" data-parallax="0.14">
-        <span class="sky__slice sky__slice--a"><svg viewBox="0 0 400 400"><use href="#mark-slice"></use></svg></span>
-        <span class="sky__slice sky__slice--b"><svg viewBox="0 0 400 400"><use href="#mark-slice"></use></svg></span>
-        <span class="sky__slice sky__slice--c"><svg viewBox="0 0 48 48"><use href="#mark-lemon"></use></svg></span>
-      </div>
-
-      <div class="sky__sea">
-        <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
-          <path d="M0 40q75-26 150 0t150 0 150 0 150 0 150 0 150 0 150 0v160H0Z" fill="none" stroke="currentColor" stroke-width="1"/>
-          <path d="M0 74q75-26 150 0t150 0 150 0 150 0 150 0 150 0 150 0v126H0Z" fill="none" stroke="currentColor" stroke-width="1" opacity=".7"/>
-          <path d="M0 112q75-26 150 0t150 0 150 0 150 0 150 0 150 0 150 0v88H0Z" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/>
-        </svg>
-      </div>
-      <div class="sky__clouds sky__clouds--bas" data-parallax="0.2"><i></i><i></i></div>
-    </div>
-
-    <!-- décor de la partie nuit -->
-    <div class="decor" aria-hidden="true">
-      <div class="decor__lemon" data-parallax="0.10">
-        <svg viewBox="0 0 400 400"><use href="#mark-slice"></use></svg>
-      </div>
-      <div class="decor__skyline" data-parallax="0.04">
-        <svg viewBox="0 0 900 200" preserveAspectRatio="xMidYMax meet"><use href="#art-sete"></use></svg>
-      </div>
-      <div class="decor__waves" data-parallax="0.16">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M0 60q75-28 150 0t150 0 150 0 150 0 150 0 150 0 150 0v60H0Z" fill="none" stroke="currentColor" stroke-width="1"/>
-          <path d="M0 84q75-28 150 0t150 0 150 0 150 0 150 0 150 0 150 0v36H0Z" fill="none" stroke="currentColor" stroke-width="1"/>
-        </svg>
-      </div>
+      <div class="sky__glow" data-parallax="0.04"></div>
+      <div class="sky__horizon" data-parallax="0.10"></div>
     </div>
 
     <!-- la bouteille -->
@@ -323,7 +280,6 @@
           <ellipse cx="120" cy="12" rx="18" ry="4" fill="#0B1D3A" opacity=".1"/>
         </svg>
       </figure>
-      <div class="bottle-holder__pool" aria-hidden="true"></div>
     </div>
 
     <!-- chapitres -->
@@ -336,7 +292,7 @@
           <span class="hero-title__main" data-split>Citrosétoise</span>
           <em class="hero-title__script">de Sète</em>
         </h1>
-        <p class="hero-sub">Citronnade artisanale — <span>pressée face à la mer</span></p>
+        <p class="hero-sub">Citronnade artisanale<i>—</i><span>pressée face à la mer</span></p>
         <p class="hero-hint">
           <span class="hero-hint__wheel" aria-hidden="true"><i></i></span>
           Faites défiler : la bouteille tourne
@@ -350,7 +306,6 @@
           <h2 class="card__title">Pressés,<br>jamais reconstitués</h2>
           <p>Des citrons de Méditerranée récoltés à maturité, pressés entiers en atelier. Douze pour cent de jus dans chaque bouteille — le double d'une limonade industrielle.</p>
           <p class="card__meta"><b>12 %</b> de jus de citron pressé</p>
-          <svg class="card__arrow" viewBox="0 0 120 80" aria-hidden="true"><path d="M4 16C40 6 92 20 104 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M112 66l-9-14-16 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </article>
         <article class="card card--right" data-side="right" data-step="1">
           <p class="eyebrow">Naturelle &amp; rafraîchissante</p>
@@ -360,7 +315,6 @@
             <li>Sans conservateur</li>
             <li>Sans arôme artificiel</li>
           </ul>
-          <svg class="card__arrow" viewBox="0 0 120 80" aria-hidden="true"><path d="M116 16C80 6 28 20 16 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 66l9-14 16 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </article>
       </section>
 
@@ -404,7 +358,7 @@
             <div data-step="2"><dt>Conservation</dt><dd>18 mois — à l'abri de la lumière</dd></div>
             <div data-step="3"><dt>Sucres</dt><dd>9,6 g / 100 ml</dd></div>
           </dl>
-          <a class="btn btn--solid" href="#ou-acheter" data-magnet data-step="4">
+          <a class="btn btn--solid" href="#ou-acheter" data-step="4">
             <span>Trouver un point de vente</span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -412,24 +366,16 @@
       </section>
     </div>
 
-    <!-- pastille de progression -->
-    <div class="scene__meter" aria-hidden="true">
-      <span class="scene__meter-label">Rotation</span>
-      <span class="scene__meter-value" data-rot-readout>0°</span>
-    </div>
   </div>
 </div>
 
-<!-- ====================== BANDEAU DÉFILANT ====================== -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span>Authentique</span><i>·</i><span>Locale</span><i>·</i><span>Intemporelle</span><i>·</i><span>Pressée face à la mer</span><i>·</i>
-    <span>Authentique</span><i>·</i><span>Locale</span><i>·</i><span>Intemporelle</span><i>·</i><span>Pressée face à la mer</span><i>·</i>
-  </div>
+<!-- ====================== SIGNATURE ====================== -->
+<div class="signature">
+  <p>Authentique<i>·</i>Locale<i>·</i>Intemporelle</p>
 </div>
 
 <!-- ====================== À PROPOS ====================== -->
-<section class="section section--pale" id="maison-intro" aria-labelledby="titre-apropos">
+<section class="section section--light" id="maison-intro" aria-labelledby="titre-apropos">
   <div class="wrap">
     <div class="about">
       <div class="about__text" data-reveal>
@@ -446,11 +392,9 @@
       </div>
 
       <div class="about__trio" data-reveal aria-hidden="true">
-        <span class="about__halo"></span>
         <svg class="about__bottle about__bottle--gauche" viewBox="0 0 240 620"><use href="#bottle-static"></use></svg>
         <svg class="about__bottle about__bottle--centre" viewBox="0 0 240 620"><use href="#bottle-static"></use></svg>
         <svg class="about__bottle about__bottle--droite" viewBox="0 0 240 620"><use href="#bottle-static"></use></svg>
-        <span class="about__reflet"></span>
       </div>
     </div>
   </div>
@@ -518,7 +462,7 @@
 </section>
 
 <!-- ====================== NOS BOUTEILLES ====================== -->
-<section class="section section--pale" id="bouteilles" aria-labelledby="titre-bouteilles">
+<section class="section section--light" id="bouteilles" aria-labelledby="titre-bouteilles">
   <div class="wrap">
     <header class="section__head section__head--center" data-reveal>
       <p class="eyebrow eyebrow--center"><span class="rule"></span>Nos bouteilles<span class="rule"></span></p>
@@ -634,9 +578,7 @@
   <div class="wrap">
     <div class="futur">
       <div class="futur__visuel" data-reveal aria-hidden="true">
-        <span class="futur__halo"></span>
         <svg class="futur__bottle" viewBox="0 0 240 620"><use href="#bottle-static"></use></svg>
-        <span class="futur__vague"></span>
       </div>
       <div class="futur__texte" data-reveal>
         <p class="eyebrow">Printemps prochain</p>
@@ -649,7 +591,7 @@
           <li><b>33 cl</b><span>verre consigné</span></li>
           <li><b>Avril</b><span>mise en vente</span></li>
         </ul>
-        <a class="btn btn--solid" href="mailto:contact@lacitrosetoise.fr?subject=Pr%C3%A9venez-moi%20-%20Citros%C3%A9toise%20C%C3%A9drat" data-magnet>
+        <a class="btn btn--solid" href="mailto:contact@lacitrosetoise.fr?subject=Pr%C3%A9venez-moi%20-%20Citros%C3%A9toise%20C%C3%A9drat">
           <span>Être prévenu de la sortie</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -659,7 +601,7 @@
 </section>
 
 <!-- ====================== DÉGUSTATION ====================== -->
-<section class="section section--deep" id="degustation" aria-labelledby="titre-degustation">
+<section class="section section--light" id="degustation" aria-labelledby="titre-degustation">
   <div class="wrap">
     <header class="section__head" data-reveal>
       <p class="eyebrow">À table</p>
@@ -702,7 +644,7 @@
       <aside class="buy__card">
         <h3>Vous êtes revendeur&nbsp;?</h3>
         <p>Cartons de 12 bouteilles consignées, livraison hebdomadaire en Occitanie, présentoir bois sur demande.</p>
-        <a class="btn btn--solid" href="mailto:contact@lacitrosetoise.fr?subject=Demande%20revendeur%20-%20La%20Citros%C3%A9toise" data-magnet>
+        <a class="btn btn--solid" href="mailto:contact@lacitrosetoise.fr?subject=Demande%20revendeur%20-%20La%20Citros%C3%A9toise">
           <span>Nous écrire</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -716,7 +658,7 @@
 </section>
 
 <!-- ====================== FAQ ====================== -->
-<section class="section section--deep" id="faq" aria-labelledby="titre-faq">
+<section class="section section--light" id="faq" aria-labelledby="titre-faq">
   <div class="wrap wrap--narrow">
     <header class="section__head" data-reveal>
       <p class="eyebrow">Questions fréquentes</p>

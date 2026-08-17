@@ -130,9 +130,7 @@
   var bottle = document.querySelector("[data-bottle]");
   var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
   var parallax = Array.prototype.slice.call(document.querySelectorAll("[data-parallax]"));
-  var readout = document.querySelector("[data-rot-readout]");
   var sky = document.querySelector("[data-sky]");
-  var meter = document.querySelector(".scene__meter");
   var progressBar = document.querySelector(".site-header__progress i");
   var header = document.querySelector(".site-header");
 
@@ -141,9 +139,14 @@
   var smooth = 0, target = 0, current = -1;
   var vh = window.innerHeight, vw = window.innerWidth;
 
+  /* écrans courts : on rend un peu de hauteur au texte */
+  function facteur() { return vh < 620 ? 0.00044 : 0.00052; }
+
   function fitBottle() {
     vh = window.innerHeight; vw = window.innerWidth;
-    var s = vw < 861 ? Math.min(vh / 1500, vw / 470) : Math.min(vh / 1150, vw / 860);
+    /* téléphone : la bouteille occupe une hauteur fixe d'écran (32 vh), ce qui
+       laisse toujours la même place au texte, du petit iPhone à la grande dalle. */
+    var s = vw < 861 ? Math.min(vh * facteur(), vw / 780) : Math.min(vh / 1150, vw / 860);
     if (bottle) bottle.style.setProperty("--bottle-scale", clamp(s, 0.34, 0.95).toFixed(3));
   }
 
@@ -159,17 +162,20 @@
     var rot = p * 360 * TOURS;
     var petit = vw < 861;
     /* mobile : la bouteille remonte pour laisser la moitié basse au texte */
+    /* haut d'écran : sous l'en-tête, à 6 px près, quelle que soit la hauteur */
+    /* haut de la bouteille calé à 74 px, soit juste sous l'en-tête */
+    var haut = 74 / vh - 0.5 + 291.4 * facteur();
     var by = (petit
-      ? track(p, [[0, 0.08], [0.17, -0.14], [0.88, -0.14], [1, -0.10]])
+      ? track(p, [[0, 0.12], [0.17, haut], [0.86, haut], [1, haut + 0.03]])
       : track(p, [[0, 0.17], [0.16, 0.04], [0.62, 0.09], [1, 0.16]])) * vh;
     var bs = petit
-      ? track(p, [[0, 1], [0.2, 0.86], [1, 0.86]])
+      ? track(p, [[0, 1.3], [0.2, 0.94], [1, 0.94]])
       : track(p, [[0, .96], [0.4, 0.92], [0.75, 0.88], [1, 0.94]]);
     var tilt = Math.sin(p * Math.PI * 2) * 2.6;
     /* chapitres 2 et 4 : la bouteille libère la moitié de l'écran */
     var bx = petit ? 0 : track(p, [
-      [0.30, 0], [0.42, -0.19], [0.58, -0.19], [0.68, 0],
-      [0.80, 0], [0.87, 0.18], [1, 0.18]
+      [0.30, 0], [0.42, -0.16], [0.58, -0.16], [0.68, 0],
+      [0.80, 0], [0.87, 0.15], [1, 0.15]
     ]) * vw;
 
     if (holder) {
@@ -180,7 +186,6 @@
     if (bottle) bottle.style.setProperty("--tilt", tilt.toFixed(2) + "deg");
     Bottle.set(rot);
 
-    if (readout) readout.textContent = Math.round(rot % 360) + "°";
 
     /* le plein jour se dissipe : on entre dans le bleu nuit de la marque */
     var jour = 1 - clamp((p - 0.04) / 0.13, 0, 1);
@@ -189,7 +194,6 @@
       sky.style.visibility = jour < 0.01 ? "hidden" : "visible";
     }
     if (header) header.classList.toggle("is-light", jour > 0.55);
-    if (meter) meter.style.opacity = ((1 - jour) * 0.8).toFixed(2);
 
     for (var i = 0; i < parallax.length; i++) {
       var f = parseFloat(parallax[i].dataset.parallax);
@@ -336,23 +340,7 @@
   })();
 
   /* ------------------------------------------------------------------ *
-   * 7. Boutons magnétiques
-   * ------------------------------------------------------------------ */
-  (function magnets() {
-    if (reduced || window.matchMedia("(hover: none)").matches) return;
-    Array.prototype.forEach.call(document.querySelectorAll("[data-magnet]"), function (el) {
-      el.addEventListener("pointermove", function (e) {
-        var r = el.getBoundingClientRect();
-        var x = (e.clientX - r.left - r.width / 2) * 0.22;
-        var y = (e.clientY - r.top - r.height / 2) * 0.3;
-        el.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
-      });
-      el.addEventListener("pointerleave", function () { el.style.transform = ""; });
-    });
-  })();
-
-  /* ------------------------------------------------------------------ *
-   * 8. FAQ : ouverture animée en hauteur
+   * 7. FAQ : ouverture animée en hauteur
    * ------------------------------------------------------------------ */
   (function accordion() {
     Array.prototype.forEach.call(document.querySelectorAll(".faq details"), function (det) {
@@ -387,13 +375,13 @@
   })();
 
   /* ------------------------------------------------------------------ *
-   * 9. Divers
+   * 8. Divers
    * ------------------------------------------------------------------ */
   var year = document.querySelector("[data-year]");
   if (year) year.textContent = new Date().getFullYear();
 
   /* ------------------------------------------------------------------ *
-   * 10. Démarrage
+   * 9. Démarrage
    * ------------------------------------------------------------------ */
   fitBottle();
   if (reduced) {

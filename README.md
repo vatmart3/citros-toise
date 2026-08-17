@@ -72,6 +72,17 @@ changez le nombre de tours (`TOURS` dans `app.js`), cette synchronisation saute.
 `prefers-reduced-motion` bascule la page en pile classique (`.no-motion`) : plus
 d'épinglage, plus de rotation, tous les chapitres visibles.
 
+## Téléphone
+
+Le téléphone reçoit le même récit que l'ordinateur : mêmes chapitres, même
+rotation, aucun contenu masqué. Seule la composition change — la bouteille
+occupe une part fixe de la hauteur d'écran (30 %, 26 % sur les écrans courts)
+et se cale à 74 px du haut ; le texte prend tout ce qui reste. La typographie
+des chapitres est dimensionnée en `vh` avec des bornes en `rem`, si bien que le
+récit tient entier de l'iPhone SE à la grande dalle sans voile ni troncature.
+`tools/` ne contient pas de test automatisé, mais la vérification se fait vite :
+ouvrir la page à 320×568 et vérifier qu'aucun chapitre ne recouvre la bouteille.
+
 ## Référencement
 
 - balises canonique, hreflang, Open Graph et Twitter Card ;
